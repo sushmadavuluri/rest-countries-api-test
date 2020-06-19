@@ -26,18 +26,52 @@ class CountriesApiJunitTest {
 
     /**
      * Happy Path.
+     * Scenario 1 : When user send correct state name
+     * Expected Result: It should give us status as 200
      */
     @Test
-    public void should_return_success_and_get_capital_for_usa() {
+    public void should_return_success_and_get_capital_for_usa_country_name() {
         Map<String, Object> responseMap = invokeWebService("https://restcountries.eu/rest/v2/name/USA");
         JsonNode actualObj = (JsonNode) responseMap.get("responseObj");
         assertNotNull(actualObj);
         assertThat(responseMap.get("status").toString(), is("200"));
         assertEquals("\"Washington, D.C.\"", actualObj.get(0).get("capital").toString());
     }
+    
+    /**
+     * Happy Path.
+     * Scenario 2 : When user send correct state code
+     * Expected Result: It should give us status as 200
+     */
+    
+    @Test
+    public void should_return_success_and_get_capital_for_usa_country_code() {
+        Map<String, Object> responseMap = invokeWebService("https://restcountries.eu/rest/v2/alpha/AU");
+        JsonNode actualObj = (JsonNode) responseMap.get("responseObj");
+        assertNotNull(actualObj);
+        assertThat(responseMap.get("status").toString(), is("200"));
+        assertEquals("\"Canberra\"", actualObj.get("capital").toString());
+    }
 
     /**
+     * Happy Path.
+     * Scenario 3 : When user send country name misspelled
+     * Expected Result: It should give us status as 404
+     */
+    
+    @Test
+    public void should_return_not_found_for_misspelled_country_name() {
+        Map<String, Object> responseMap = invokeWebService("https://restcountries.eu/rest/v2/name/Brazel");
+        JsonNode actualObj = (JsonNode) responseMap.get("responseObj");
+        assertNotNull(actualObj);
+        assertThat(responseMap.get("status").toString(), is("404"));
+      
+    }
+    
+    /**
      * Sad Path.
+     * * Scenario 4 : When user send invalid  input like numbers
+     * Expected Result: It should give us status as 404
      */
     @Test
     public void should_return_not_found_for_invalid_input() {
